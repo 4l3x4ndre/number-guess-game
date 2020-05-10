@@ -6,7 +6,7 @@ b.addEventListener("click", nombreAleatoire)
 
 function nombreAleatoire() {
     // Nombre aléatoire
-    let nb = Math.round(Math.random() * 101)
+    let nb = Math.round(Math.random() * 5) + 1
     printer(nb)
 
     // Création de notre objet de jeu
@@ -19,29 +19,30 @@ function nombreAleatoire() {
 function demanderNombre(jeu) {
     // Création de la zone de saisie
     let tentatives_restantes = jeu.nb_tentatives_debut - jeu.tentatives
-    let phrase1 = "Il vous reste " + tentatives_restantes + " " 
-    if (tentatives_restantes == 1) {
-        phrase1 += "tentative"
-    } else {
-        phrase1 += "tentatives"
-    }
+    let phrase1 = "Il vous reste " + tentatives_restantes + " tentative" + (tentatives_restantes > 1 ? "s" : "")
 
     let phrase2 = "Essayer de deviner le nombre:"
     let reponse = prompt(phrase1 + "\n" + phrase2)
-    
+
+    // Si le joueur annule
+    if (reponse === null) {
+        return
+    }
+
     // On vérifie que la réponse est un nombre
-    if (isNaN(reponse)) {
-        alert("Perdu : il faut un nombre !")
+    if (isNaN(reponse) || reponse === '') {
+        alert("Il faut un nombre !")
+        demanderNombre(jeu)
         return
     }
 
     // Augmentation du nombre de tentatives
-    jeu.tentatives ++;
+    jeu.tentatives ++
 
     // vérification réponse
     if (parseInt(reponse) === jeu.nb) {
         jeu.fini = true
-        afficherAlert(jeu, "Vous avez trouvé le nombre " + jeu.nb + " en " + jeu.tentatives + " tentatives!")
+        afficherAlert(jeu, "Vous avez trouvé le nombre " + jeu.nb + " en " + jeu.tentatives + " tentative" + (jeu.tentatives > 1 ? "s" : ""))
     } else if (reponse < jeu.nb) {
         afficherAlert(jeu, "Trop petit")
     } else if (reponse > jeu.nb) {
@@ -53,9 +54,9 @@ function afficherAlert(jeu, phrase) {
     // On affiche le message dans la boite de dialogue
     alert(phrase)
 
-    // On regarde si le joueur peu encore jouer
+    // On regarde si le joueur peut encore jouer
     if (jeu.tentatives >= jeu.nb_tentatives_debut) {
-        alert("Vous avez perdu ! \n Le nombre était " + jeu.nb)
+        alert("Vous avez perdu ! \nLe nombre était " + jeu.nb)
         return
     }
 
